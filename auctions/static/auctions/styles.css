@@ -1,0 +1,29 @@
+body {
+    padding: 10px;
+}
+
+img {
+    max-width: 300px;
+}
+
+td, tr {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+}
+
+.rightcolumn {
+    padding-left: 20px;
+}
+
+th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    background-color: #04AA6D;
+    color: white;
+  }
+
+.flexit {
+    display: flex;
+}

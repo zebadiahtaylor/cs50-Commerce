@@ -1,0 +1,23 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>My Auctions</h2>
+
+<table class="form-control">
+    <tr>
+        <th>Auction</th>
+        <th>Image</th>
+        <th>Starting Bid</th>
+        <th>Current Bid</th>
+    </tr>
+    {% for auction in auctions %}
+    <tr>
+        <td><a href="{% url 'auction' auction.id %}">{{ auction.title }}</a></td>
+        <td><img src="{{ auction.image_url }}" style="max-width:300px" alt=""></td>
+        <td>{{ auction.starting_bid|floatformat:2 }}</td>
+        <td>{{ auction.current_bid|floatformat:2 }}</td>
+    </tr>
+    {% endfor %} 
+</table>
+
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'auctions/layout.html' %} 
+
+{% block body %} 
+<form action='{% url "sell" %}' method='post'>
+    {% csrf_token %} 
+    {{ form }}
+    <label for='image_url'></label>
+    <input type='url' name='image_url' id='image_url' placeholder='Image URL (optional)' class='form-control'>
+    <br>
+    <input class='btn btn-primary' type='submit' value='sell'>
+</form>
+{% endblock %}

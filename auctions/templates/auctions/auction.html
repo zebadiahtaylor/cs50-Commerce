@@ -1,0 +1,83 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h1> {{ auction.title }} </h1> <br><br>
+    <img src="{{ auction.image_url }}" alt=""> <br>
+    {% if auction.active %}
+    The current price is {{ auction.min_bid|floatformat:2 }}
+    {% else %}
+    This auction has ended. The final price was {{ auction.current_bid|floatformat:2 }}
+    {% endif %}
+    <h3>Description </h3> <br>
+    {{ auction.description }}
+    <br><br>
+    –Seller: {{ auction.user }}
+    <br>
+    {% if user.is_authenticated %}
+        {% if has_won and not auction.active %}
+        <br>
+        <h3 style="background-color: skyblue;">You have won this auction!</h3>
+        <br>
+        {% endif %}
+        {% if auction.active %}
+            <form action="{% url 'bid' auction.id %}" method='post'>
+                {% csrf_token %} 
+                {{ bidform }}
+                <button type="submit" class='btn btn-primary' id='bid' name='bid' value='bid'>Place a bid</button>
+            </form>
+        {% endif %}
+        {% if auction.is_watched %}
+            <form action="{% url 'remove_from_watchlist' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class='btn btn-primary' id="watchlist" name="watchlist" value="{{ auction.id }}">{{ auction.watch_text }}</button>
+            </form>
+        {% else %}
+            {% if auction.active %}
+                <form action="{% url 'add_to_watchlist' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class='btn btn-primary' id="watchlist" name="watchlist" value="{{ auction.id }}">{{ auction.watch_text }}</button>
+                </form>
+            {% endif %}
+        {% endif %}
+        <br><br>
+        {% if not auction.active %}
+            This auction has ended.
+        {% endif %}
+    {% else %} 
+        Sign in for access to additional features, like bidding. 
+    {% endif %}
+    {% if comments %}
+        <h4>Comments</h4>
+        {% for comment in comments %}
+            {{ comment.user }}:<br> {{ comment.text }}<br>
+            {% if comment.user == user %}
+                <form action="{% url 'edit_comment' comment.id %}" method="post">
+                    {% csrf_token %}
+                    {{ commentform }}
+                    <button type="submit" class='btn btn-primary' id="comment" name="comment" value="{{ comment.id }}">Edit Comment</button>
+                </form>
+                <form action="{% url 'remove_comment' comment.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class='btn btn-primary' id="comment" name="comment" value="{{ comment.id }}" style="background-color: rgb(214, 109, 109);">Remove Comment</button>
+                </form>
+            {% endif %}
+        {% endfor %}
+    {% endif %} 
+    {% if auction.active and user.is_authenticated %}
+    <form action="{% url 'comment' auction.id %}" method="post">
+        {% csrf_token %}
+        {{ commentform }}
+        <button type="submit" class='btn btn-primary' id="comment" name="comment" value="{{ auction.id }}">Comment</button>
+    </form>
+    {% endif %}
+    {% if is_users and auction.active %}
+        <form action="{% url 'delete_auction' auction.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class='btn btn-primary' id="delete" name="delete" value="{{ auction.id }}" style="background-color:Tomato;">Delete this Auction</button>
+        </form>
+        <form action="{% url 'close_auction' auction.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class='btn btn-primary' id="close" name="close" value="{{ auction.id }}">Close Auction and Accept Bid</button>
+        </form>
+    {% endif %}
+{% endblock %}
